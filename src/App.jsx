@@ -1,5 +1,8 @@
+import { Routes, Route, Link } from "react-router-dom"
+import { Accueil } from "./pages/accueil"
+import { Produits } from "./pages/produits"
+import { Panier } from "./pages/panier"
 import { useState } from "react"
-import { ProductCard } from "./components/ProductCard"
 
 export default function App() {
   const [panier, setPanier] = useState([])
@@ -40,34 +43,39 @@ export default function App() {
   const nombreArticles = panier.reduce((somme, produit) => {
     return somme + produit.quantite
   }, 0)
+  return (
+    <div>
+      <nav>
+        <Link to="/">Accueil</Link> |{" "}
+        <Link to="/produits">Produits</Link> |{" "}
+        <Link to="/panier">Panier ({nombreArticles})</Link>
+      </nav>
 
-  return <div>
-    <h1>Bienvenue sur Minishop</h1>
+      <Routes>
+        <Route path="/" element={<Accueil />} />
 
-    <p>Mon panier : {nombreArticles} article(s)</p>
+        <Route
+          path="/produits"
+          element={
+            <Produits
+              products={products}
+              ajouterAuPanier={ajouterAuPanier}
+            />
+          }
+        />
 
-    {products.map((produit) => (
-      <ProductCard
-        key={produit.id}
-        nom={produit.nom}
-        prix={produit.prix}
-        produit={produit}
-        ajouterAuPanier={ajouterAuPanier}
-      />
-    ))}
-    <section>
-      <h2>Mon panier</h2>
-      {panier.map((produit) => (
-        <div key={produit.id}>
-          <h3>{produit.nom}</h3>
-          <p>{produit.prix}$</p>
-          <p>Quantité : {produit.quantite}</p>
-          <button onClick={() => supprimerDuPanier(produit.id)}>
-            Supprimer
-          </button>
-        </div>
-      ))}
-      <p>Total: {total}$</p>
-    </section>
-  </div>
+        <Route
+          path="/panier"
+          element={
+            <Panier
+              panier={panier}
+              supprimerDuPanier={supprimerDuPanier}
+              total={total}
+              nombreArticles={nombreArticles}
+            />
+          }
+        />
+      </Routes>
+    </div>
+  );
 }
