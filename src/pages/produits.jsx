@@ -1,6 +1,10 @@
 import { ProductCard } from "../components/ProductCard"
+import { useContext } from "react";
+import { PanierContext } from "../context/PanierContext";
 
-export function Produits({ products, ajouterAuPanier }) {
+
+export function Produits({ products }) {
+    const { ajouterAuPanier } = useContext(PanierContext)
 
     return (
         <section>

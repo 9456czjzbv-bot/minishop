@@ -1,9 +1,16 @@
-export function Panier({
-    panier,
-    supprimerDuPanier,
-    total,
-    nombreArticles
-}) {
+import { useContext } from "react"
+import { PanierContext } from "../context/PanierContext"
+
+
+export function Panier() {
+    const {
+        panier,
+        supprimerDuPanier,
+        total,
+        nombreArticles
+    } = useContext(PanierContext)
+
+
     return (
         <section>
 
