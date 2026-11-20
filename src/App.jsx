@@ -12,22 +12,39 @@ export default function App() {
   ]
 
   const ajouterAuPanier = (produit) => {
-    setPanier((ancienPanier) => [...ancienPanier, produit])
+    setPanier((ancienPanier) => {
+      const existeDeja = ancienPanier.some(
+        (element) => element.id === produit.id
+      )
+      if (existeDeja) {
+        return ancienPanier.map((element) =>
+          element.id === produit.id
+            ? { ...element, quantite: element.quantite + 1 }
+            : element
+        )
+      } else {
+        return [...ancienPanier, { ...produit, quantite: 1 }]
+      }
+    })
   }
 
-  const supprimerDuPanier = (indexAsupprimer) => {
+  const supprimerDuPanier = (id) => {
     setPanier((ancienPanier) =>
-      ancienPanier.filter((produit, index) => index !== indexAsupprimer))
+      ancienPanier.filter((produit) => produit.id !== id))
   }
 
   const total = panier.reduce((somme, produit) => {
-    return somme + produit.prix
+    return somme + produit.prix * produit.quantite
   }, 0);
+
+  const nombreArticles = panier.reduce((somme, produit) => {
+    return somme + produit.quantite
+  }, 0)
 
   return <div>
     <h1>Bienvenue sur Minishop</h1>
 
-    <p>Mon panier : {panier.length} produit(s)</p>
+    <p>Mon panier : {nombreArticles} article(s)</p>
 
     {products.map((produit) => (
       <ProductCard
@@ -40,11 +57,12 @@ export default function App() {
     ))}
     <section>
       <h2>Mon panier</h2>
-      {panier.map((produit, index) => (
-        <div key={index}>
+      {panier.map((produit) => (
+        <div key={produit.id}>
           <h3>{produit.nom}</h3>
           <p>{produit.prix}$</p>
-          <button onClick={() => supprimerDuPanier(index)}>
+          <p>Quantité : {produit.quantite}</p>
+          <button onClick={() => supprimerDuPanier(produit.id)}>
             Supprimer
           </button>
         </div>
